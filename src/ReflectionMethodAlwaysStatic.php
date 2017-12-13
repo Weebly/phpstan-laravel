@@ -2,7 +2,7 @@
 
 namespace Weebly\PHPStan\Laravel;
 
-class ReflectionMethodAlwaysStatic extends \ReflectionMethod
+final class ReflectionMethodAlwaysStatic extends \ReflectionMethod
 {
     /**
      * @param \ReflectionMethod $reflectionMethod

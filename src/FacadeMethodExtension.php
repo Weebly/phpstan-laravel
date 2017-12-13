@@ -11,7 +11,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
 
-class FacadeMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
+final class FacadeMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
     /**
      * @var \PHPStan\Broker\Broker

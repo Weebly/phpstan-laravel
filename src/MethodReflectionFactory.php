@@ -11,7 +11,7 @@ use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Type\FileTypeMapper;
 use PHPStan\Type\Type;
 
-class MethodReflectionFactory
+final class MethodReflectionFactory
 {
     /**
      * @var \PHPStan\Reflection\Php\PhpMethodReflectionFactory

@@ -13,7 +13,7 @@ use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Type\FileTypeMapper;
 use PHPStan\Type\Type;
 
-class MacroMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
+final class MacroMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
     /**
      * @var \PHPStan\Broker\Broker

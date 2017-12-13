@@ -2,7 +2,7 @@
 
 namespace Weebly\PHPStan\Laravel;
 
-class ReflectionMethodFunctionProxy extends \ReflectionMethod
+final class ReflectionMethodFunctionProxy extends \ReflectionMethod
 {
     /**
      * @var string

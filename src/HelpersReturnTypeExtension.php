@@ -13,7 +13,7 @@ use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 
-class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExtension
+final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
     /**
      * @var string[]
