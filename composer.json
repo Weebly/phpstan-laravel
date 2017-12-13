@@ -9,10 +9,13 @@
             "email": "chris.leppanen@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "laravel/framework": "5.5.*",
+        "phpstan/phpstan": "^0.9"
+    },
     "autoload": {
         "psr-4": {
-            "Weebly\\PHPStan\\Laravel": "src/"
+            "Weebly\\PHPStan\\Laravel\\": "src/"
         }
     }
 }
