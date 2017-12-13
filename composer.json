@@ -13,9 +13,17 @@
         "laravel/framework": "5.5.*",
         "phpstan/phpstan": "^0.9"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5.2"
+    },
     "autoload": {
         "psr-4": {
             "Weebly\\PHPStan\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Weebly\\PHPStan\\Laravel\\": "tests/"
         }
     }
 }
