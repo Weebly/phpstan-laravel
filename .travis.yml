@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+env:
+  - COMPOSER_OPTS=""
+  - COMPOSER_OPTS="--prefer-lowest"
+
+before_install:
+  - composer self-update
+
+install:
+  - composer update --prefer-dist --no-interaction $COMPOSER_OPTS
+
+script:
+  - vendor/bin/phpunit
