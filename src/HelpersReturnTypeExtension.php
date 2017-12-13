@@ -54,7 +54,6 @@ class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExtension
                 }
 
                 return new MixedType();
-                break;
 
             case 'validator':
                 if (empty($functionCall->args)) {
@@ -62,7 +61,6 @@ class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExtension
                 }
 
                 return new ObjectType(\Illuminate\Contracts\Validation\Validator::class);
-                break;
 
             case 'view':
                 if (empty($functionCall->args)) {
@@ -70,7 +68,6 @@ class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExtension
                 }
 
                 return new ObjectType(\Illuminate\View\View::class);
-                break;
         }
 
         return new MixedType();
