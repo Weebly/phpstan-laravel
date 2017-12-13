@@ -9,5 +9,10 @@
             "email": "chris.leppanen@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Weebly\\PHPStan\\Laravel": "src/"
+        }
+    }
 }
