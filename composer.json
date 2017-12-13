@@ -1,0 +1,13 @@
+{
+    "name": "weebly/phpstan-laravel",
+    "license": "BSD-2-Clause",
+    "description": "Laravel plugins for PHPStan",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Chris Leppanen",
+            "email": "chris.leppanen@gmail.com"
+        }
+    ],
+    "require": {}
+}
