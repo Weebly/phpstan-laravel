@@ -118,7 +118,7 @@ class ReflectionMethodFunctionProxy extends \ReflectionMethod
 
     public function getName()
     {
-        return $this->getNamespaceName() . '\\' . $this->getShortName();
+        return $this->methodName;
     }
 
     public function getNamespaceName()
@@ -148,7 +148,7 @@ class ReflectionMethodFunctionProxy extends \ReflectionMethod
 
     public function getShortName()
     {
-        return $this->methodName;
+        return $this->getName();
     }
 
     public function getStartLine()
