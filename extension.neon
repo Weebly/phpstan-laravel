@@ -1,0 +1,22 @@
+services:
+    -
+        class: Weebly\PHPStan\Laravel\MethodReflectionFactory
+    -
+        class: Weebly\PHPStan\Laravel\BuilderMethodExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+    -
+        class: Weebly\PHPStan\Laravel\FacadeMethodExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+    -
+        class: Weebly\PHPStan\Laravel\MacroMethodExtension
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+    -
+        class: Weebly\PHPStan\Laravel\HelpersReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicFunctionReturnTypeExtension
+
+parameters:
+    bootstrap: %rootDir%/vendor/weebly/phpstan-laravel/bootstrap.php
