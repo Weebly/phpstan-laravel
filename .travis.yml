@@ -9,9 +9,6 @@ env:
   - COMPOSER_OPTS=""
   - COMPOSER_OPTS="--prefer-lowest"
 
-before_install:
-  - composer self-update
-
 install:
   - composer update --prefer-dist --no-interaction $COMPOSER_OPTS
 
