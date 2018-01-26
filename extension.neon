@@ -19,4 +19,4 @@ services:
             - phpstan.broker.dynamicFunctionReturnTypeExtension
 
 parameters:
-    bootstrap: %rootDir%/vendor/weebly/phpstan-laravel/bootstrap.php
+    bootstrap: %rootDir%/../../weebly/phpstan-laravel/bootstrap.php
