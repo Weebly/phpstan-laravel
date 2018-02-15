@@ -51,7 +51,13 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
      */
     public function hasMethod(ClassReflection $classReflection, string $methodName): bool
     {
-        if ($classReflection->isSubclassOf(Model::class) && !isset($this->methods[$classReflection->getName()])) {
+        if (!isset($this->methods[$classReflection->getName()]) && (
+                $classReflection->isSubclassOf(Model::class)
+                || preg_match(
+                    '/@mixin\s+' . preg_quote('\\' . Builder::class) . '/',
+                    (string) $classReflection->getNativeReflection()->getDocComment()
+                )
+        )) {
             $builder = $this->broker->getClass(Builder::class);
             $this->methods[$classReflection->getName()] = $this->createWrappedMethods($classReflection, $builder);
 
