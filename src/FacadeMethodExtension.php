@@ -69,6 +69,17 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
                 $instanceReflection = $this->broker->getClass(get_class($instance));
                 $this->methods[$classReflection->getName()] = $this->createMethods($classReflection, $instanceReflection);
 
+                if (preg_match_all(
+                    '/@mixin\s+([\w\\\\]+)/',
+                    (string) $instanceReflection->getNativeReflection()->getDocComment(),
+                    $mixins
+                )) {
+                    foreach ($mixins[1] as $mixin) {
+                        $mixinInstanceReflection = $this->broker->getClass($mixin);
+                        $this->methods[$classReflection->getName()] += $this->createMethods($classReflection, $mixinInstanceReflection);
+                    }
+                }
+
                 if (isset($this->extensions[$instanceReflection->getName()])) {
                     $extensionMethod = $this->extensions[$instanceReflection->getName()];
                     $extensionReflection = $this->broker->getClass(get_class($instance->$extensionMethod()));
