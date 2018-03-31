@@ -20,6 +20,7 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
      */
     private $helpers = [
         'app',
+        'response',
         'validator',
         'view',
     ];
@@ -54,7 +55,12 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
                 }
 
                 return new MixedType();
+            case 'response':
+                if (empty($functionCall->args)) {
+                    return new ObjectType(\Illuminate\Contracts\Routing\ResponseFactory::class);
+                }
 
+                return new ObjectType(\Illuminate\Http\Response::class);
             case 'validator':
                 if (empty($functionCall->args)) {
                     return new ObjectType(\Illuminate\Contracts\Validation\Factory::class);
