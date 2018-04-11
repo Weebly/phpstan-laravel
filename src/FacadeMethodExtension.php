@@ -10,6 +10,8 @@ use PHPStan\Reflection\BrokerAwareExtension;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
+use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use PHPStan\Broker\ClassNotFoundException;
 
 final class FacadeMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
@@ -37,13 +39,20 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
     private $methodReflectionFactory;
 
     /**
+     * @var AnnotationsHelper
+     */
+    private $annotationsHelper;
+
+    /**
      * FacadeMethodExtension constructor.
      *
      * @param \Weebly\PHPStan\Laravel\MethodReflectionFactory $methodReflectionFactory
+     * @param AnnotationsHelper $annotationsHelper
      */
-    public function __construct(MethodReflectionFactory $methodReflectionFactory)
+    public function __construct(MethodReflectionFactory $methodReflectionFactory, AnnotationsHelper $annotationsHelper)
     {
         $this->methodReflectionFactory = $methodReflectionFactory;
+        $this->annotationsHelper = $annotationsHelper;
     }
 
     /**
@@ -69,15 +78,13 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
                 $instanceReflection = $this->broker->getClass(get_class($instance));
                 $this->methods[$classReflection->getName()] = $this->createMethods($classReflection, $instanceReflection);
 
-                if (preg_match_all(
-                    '/@mixin\s+([\w\\\\]+)/',
-                    (string) $instanceReflection->getNativeReflection()->getDocComment(),
-                    $mixins
-                )) {
-                    foreach ($mixins[1] as $mixin) {
+                foreach ($this->annotationsHelper->getMixins($instanceReflection) as $mixin) {
+                    try {
                         $mixinInstanceReflection = $this->broker->getClass($mixin);
-                        $this->methods[$classReflection->getName()] += $this->createMethods($classReflection, $mixinInstanceReflection);
+                    } catch (ClassNotFoundException $e) {
+                        continue;
                     }
+                    $this->methods[$classReflection->getName()] += $this->createMethods($classReflection, $mixinInstanceReflection);
                 }
 
                 if (isset($this->extensions[$instanceReflection->getName()])) {

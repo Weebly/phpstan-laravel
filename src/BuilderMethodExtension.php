@@ -10,6 +10,7 @@ use PHPStan\Reflection\BrokerAwareExtension;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
+use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
 
 final class BuilderMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
@@ -29,13 +30,20 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
     private $methodReflectionFactory;
 
     /**
+     * @var AnnotationsHelper
+     */
+    private $annotationsHelper;
+
+    /**
      * BuilderMethodExtension constructor.
      *
      * @param \Weebly\PHPStan\Laravel\MethodReflectionFactory $methodReflectionFactory
+     * @param AnnotationsHelper $annotationsHelper
      */
-    public function __construct(MethodReflectionFactory $methodReflectionFactory)
+    public function __construct(MethodReflectionFactory $methodReflectionFactory, AnnotationsHelper $annotationsHelper)
     {
         $this->methodReflectionFactory = $methodReflectionFactory;
+        $this->annotationsHelper = $annotationsHelper;
     }
 
     /**
@@ -53,10 +61,7 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
     {
         if (!isset($this->methods[$classReflection->getName()]) && (
                 $classReflection->isSubclassOf(Model::class)
-                || preg_match(
-                    '/@mixin\s+' . preg_quote('\\' . Builder::class) . '/',
-                    (string) $classReflection->getNativeReflection()->getDocComment()
-                )
+                || in_array(Builder::class, $this->annotationsHelper->getMixins($classReflection))
         )) {
             $builder = $this->broker->getClass(Builder::class);
             $this->methods[$classReflection->getName()] = $this->createWrappedMethods($classReflection, $builder);

@@ -10,6 +10,10 @@ use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\FileTypeMapper;
 use Weebly\PHPStan\Laravel\FacadeMethodExtension;
+use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use PHPStan\Broker\ClassNotFoundException;
+use Illuminate\Database\Connection;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -24,12 +28,30 @@ class FacadeMethodExtensionTest extends TestCase
 
     public function testHasMethod()
     {
-        // Native accessor method
-        $this->assertTrue($this->hasMethod(TestFacade::class, 'someMethod'));
-        $this->assertFalse($this->hasMethod(TestFacade::class, 'fakeMethod'));
-        // Method from accessor mixin
-        $this->assertTrue($this->hasMethod(TestFacade::class, 'table'));
-        $this->assertTrue($this->hasMethod(TestFacade::class, 'shouldUse'));
+        $testFacade = new class() extends Facade{
+            /**
+             * @inheritdoc
+             */
+            protected static function getFacadeAccessor()
+            {
+                return new class() {
+                    public function someMethod() {
+                        return true;
+                    }
+                };
+            }
+        };
+
+        try {
+            // Native accessor method
+            $this->assertTrue($this->hasMethod(get_class($testFacade), 'someMethod'));
+            $this->assertFalse($this->hasMethod(get_class($testFacade), 'fakeMethod'));
+            // Method from accessor mixin
+            $this->assertTrue($this->hasMethod(get_class($testFacade), 'table'));
+            $this->assertTrue($this->hasMethod(get_class($testFacade), 'shouldUse'));
+        } catch (ClassNotFoundException $e) {
+            $this->markTestIncomplete($e->getMessage());
+        }
     }
 
     /**
@@ -62,37 +84,34 @@ class FacadeMethodExtensionTest extends TestCase
     }
 
     /**
+     * @return AnnotationsHelper|MockObject
+     */
+    private function makeAnnotationsHelperMock()
+    {
+        $annotationsHelper = $this
+            ->getMockBuilder(AnnotationsHelper::class)
+            ->getMock();
+        $annotationsHelper->method('getMixins')->willReturn([Connection::class, AuthManager::class, 'Fake']);
+
+        return $annotationsHelper;
+    }
+
+    /**
      * Check existence of the method in given class
      *
      * @param string $className
      * @param string $methodName
      * @return bool
+     * @throws ClassNotFoundException
      */
     private function hasMethod(string $className, string $methodName): bool
     {
-        $extension = new FacadeMethodExtension($this->makeMethodReflectionFactoryMock());
+        $extension = new FacadeMethodExtension(
+            $this->makeMethodReflectionFactoryMock(),
+            $this->makeAnnotationsHelperMock()
+        );
         $extension->setBroker($this->broker);
 
         return $extension->hasMethod($this->broker->getClass($className), $methodName);
-    }
-}
-
-/**
- * @mixin \Illuminate\Database\Connection
- * @mixin \Illuminate\Auth\AuthManager
- */
-class TestFacadeAccessor {
-    function someMethod() {
-        return true;
-    }
-}
-
-class TestFacade extends Facade {
-    /**
-     * @inheritdoc
-     */
-    protected static function getFacadeAccessor()
-    {
-        return new TestFacadeAccessor();
     }
 }
