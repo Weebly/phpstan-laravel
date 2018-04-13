@@ -18,5 +18,7 @@ services:
         tags:
             - phpstan.broker.dynamicFunctionReturnTypeExtension
 
+    -   class: Weebly\PHPStan\Laravel\Utils\AnnotationsHelper
+
 parameters:
     bootstrap: %rootDir%/../../weebly/phpstan-laravel/bootstrap.php
