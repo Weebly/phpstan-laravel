@@ -61,11 +61,11 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
     public function hasMethod(ClassReflection $classReflection, string $methodName): bool
     {
         if ($classReflection->hasTraitUse(Macroable::class)) {
-            /** @var \Illuminate\Support\Traits\Macroable $macorable */
-            $macorable = $classReflection->getName();
+            /** @var \Illuminate\Support\Traits\Macroable $macroable */
+            $macroable = $classReflection->getName();
 
-            if ($macorable::hasMacro($methodName) && !isset($this->methods[$classReflection->getName()])) {
-                $refObject = new \ReflectionClass($macorable);
+            if ($macroable::hasMacro($methodName) && !isset($this->methods[$classReflection->getName()])) {
+                $refObject = new \ReflectionClass($macroable);
                 $refProperty = $refObject->getProperty('macros');
                 $refProperty->setAccessible(true);
 
