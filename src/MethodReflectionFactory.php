@@ -8,6 +8,7 @@ use PHPStan\PhpDoc\Tag\ParamTag;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
+use PHPStan\Reflection\Php\NativeBuiltinMethodReflection;
 use PHPStan\Type\FileTypeMapper;
 use PHPStan\Type\Type;
 
@@ -80,7 +81,7 @@ final class MethodReflectionFactory
         if ($methodWrapper) {
             $methodReflection = new $methodWrapper($methodReflection);
         } else {
-            $methodReflection = new ReflectionMethodAlwaysStatic($methodReflection);
+            $methodReflection = new NativeBuiltinMethodReflection($methodReflection);
         }
 
         return $this->methodReflectionFactory->create(
