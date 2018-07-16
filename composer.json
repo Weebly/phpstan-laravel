@@ -25,10 +25,5 @@
         "psr-4": {
             "Tests\\Weebly\\PHPStan\\Laravel\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     }
 }
