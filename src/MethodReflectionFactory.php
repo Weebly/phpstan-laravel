@@ -60,6 +60,7 @@ final class MethodReflectionFactory
             $resolvedPhpDoc = $this->fileTypeMapper->getResolvedPhpDoc(
                 $phpDocBlock->getFile(),
                 $phpDocBlock->getClass(),
+                null,
                 $phpDocBlock->getDocComment()
             );
             $phpDocParameterTypes = array_map(function (ParamTag $tag): Type {
