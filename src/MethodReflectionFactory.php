@@ -75,6 +75,7 @@ final class MethodReflectionFactory
 
         return $this->methodReflectionFactory->create(
             $classReflection,
+            null,
             $methodReflection,
             $phpDocParameterTypes,
             $phpDocReturnType
