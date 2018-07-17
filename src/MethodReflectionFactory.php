@@ -48,6 +48,10 @@ final class MethodReflectionFactory
     {
         $phpDocParameterTypes = [];
         $phpDocReturnType = null;
+        $phpDocThrowType = null;
+        $phpDocIsDeprecated = false;
+        $phpDocIsInternal = false;
+        $phpDocIsFinal = false;
         if ($methodReflection->getDocComment() !== false) {
             $phpDocBlock = PhpDocBlock::resolvePhpDocBlockForMethod(
                 Broker::getInstance(),
@@ -63,10 +67,15 @@ final class MethodReflectionFactory
                 null,
                 $phpDocBlock->getDocComment()
             );
+
             $phpDocParameterTypes = array_map(function (ParamTag $tag): Type {
                 return $tag->getType();
             }, $resolvedPhpDoc->getParamTags());
             $phpDocReturnType = $resolvedPhpDoc->getReturnTag() !== null ? $resolvedPhpDoc->getReturnTag()->getType() : null;
+            $phpDocThrowType = $resolvedPhpDoc->getThrowsTag() !== null ? $resolvedPhpDoc->getThrowsTag()->getType() : null;
+            $phpDocIsDeprecated = $resolvedPhpDoc->isDeprecated();
+            $phpDocIsInternal = $resolvedPhpDoc->isInternal();
+            $phpDocIsFinal = $resolvedPhpDoc->isFinal();
         }
 
         if ($methodWrapper) {
@@ -78,7 +87,11 @@ final class MethodReflectionFactory
             null,
             $methodReflection,
             $phpDocParameterTypes,
-            $phpDocReturnType
+            $phpDocReturnType,
+            $phpDocThrowType,
+            $phpDocIsDeprecated,
+            $phpDocIsInternal,
+            $phpDocIsFinal
         );
     }
 }
