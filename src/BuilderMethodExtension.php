@@ -3,6 +3,7 @@
 namespace Weebly\PHPStan\Laravel;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use PHPStan\Broker\Broker;
@@ -11,6 +12,24 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
 use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use PHPStan\Type\Type;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\VoidType;
+use PHPStan\Type\UnionType;
+use PHPStan\Type\StringType;
+use PHPStan\Type\ClosureType;
+use PHPStan\Type\BooleanType;
+use PHPStan\Type\IterableType;
+use PHPStan\Type\IntegerType;
+use PHPStan\Reflection\Php\NativeBuiltinMethodReflection;
+use Weebly\PHPStan\Laravel\ReflectionMethodAlwaysStatic;
+use Weebly\PHPStan\Laravel\Types\WhereClosureType;
+use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
+use PHPStan\Reflection\Php\PhpMethodReflection;
+use PHPStan\Reflection\Native\NativeParameterReflection;
+use PHPStan\Reflection\PassedByReference;
+use ReflectionMethod;
 
 final class BuilderMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
@@ -20,12 +39,12 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
     private $broker;
 
     /**
-     * @var \PHPStan\Reflection\MethodReflection[]
+     * @var \PHPStan\Reflection\MethodReflection[][]
      */
     private $methods = [];
 
     /**
-     * @var \Weebly\PHPStan\Laravel\MethodReflectionFactory
+     * @var \PHPStan\Reflection\Php\PhpMethodReflectionFactory
      */
     private $methodReflectionFactory;
 
@@ -34,14 +53,10 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
      */
     private $annotationsHelper;
 
-    /**
-     * BuilderMethodExtension constructor.
-     *
-     * @param \Weebly\PHPStan\Laravel\MethodReflectionFactory $methodReflectionFactory
-     * @param AnnotationsHelper $annotationsHelper
-     */
-    public function __construct(MethodReflectionFactory $methodReflectionFactory, AnnotationsHelper $annotationsHelper)
-    {
+    public function __construct(
+        PhpMethodReflectionFactory $methodReflectionFactory,
+        AnnotationsHelper $annotationsHelper
+    ) {
         $this->methodReflectionFactory = $methodReflectionFactory;
         $this->annotationsHelper = $annotationsHelper;
     }
@@ -59,23 +74,107 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
      */
     public function hasMethod(ClassReflection $classReflection, string $methodName): bool
     {
-        if (!isset($this->methods[$classReflection->getName()]) && (
-                $classReflection->isSubclassOf(Model::class)
-                || in_array(Builder::class, $this->annotationsHelper->getMixins($classReflection))
-        )) {
-            $builder = $this->broker->getClass(Builder::class);
-            $this->methods[$classReflection->getName()] = $this->createWrappedMethods($classReflection, $builder);
+        if (
+            $classReflection->isSubclassOf(Model::class) ||
+            $classReflection->getName() === HasMany::class ||
+            $classReflection->getName() === Builder::class
+        ) {
+            if ($methodName === 'where') {
+                $phpDocParameterTypes = [
+                    'column' => new UnionType([
+                        // TODO array support
+                        new StringType(),
+                        new WhereClosureType(),
+                    ]),
+                    'operator' => new UnionType([
+                        new IntegerType(),
+                        new StringType(),
+                        new VoidType(),
+                    ]),
+                    'value' => new UnionType([
+                        new StringType(),
+                        new VoidType(),
+                    ]),
+                    'boolean' => new UnionType([
+                        new StringType(),
+                        new VoidType(),
+                    ]),
+                ];
+                $methodReflection = new ReflectionMethod(Builder::class, 'where');
+                $returnType = new ObjectType(Builder::class);
+            } elseif ($methodName === 'orderBy') {
+                $phpDocParameterTypes = [
+                    new StringType(),
+                    new StringType(),
+                ];
+                $methodReflection = new ReflectionMethod(QueryBuilder::class, 'orderBy');
+                $returnType = new ObjectType(Builder::class);
+            } elseif ($methodName === 'with' || $methodName === 'withCount') {
+                $phpDocParameterTypes = [
+                    new ArrayType(new UnionType([
+                        new IntegerType(),
+                        new StringType(),
+                    ]), new UnionType([
+                        new WhereClosureType(),
+                        new StringType(),
+                    ])),
+                ];
+                $methodReflection = new ReflectionMethod(Builder::class, $methodName);
+                $returnType = new ObjectType(Builder::class);
+            } elseif ($methodName === 'groupBy') {
+                $phpDocParameterTypes = [
+                    new StringType(),
+                ];
+                $methodReflection = new ReflectionMethod(QueryBuilder::class, 'groupBy');
+                $returnType = new ObjectType(Builder::class);
+            } elseif ($methodName === 'create') {
+                $phpDocParameterTypes = [
+                    new ArrayType(new StringType(), new StringType()),
+                ];
+                $methodReflection = new ReflectionMethod(Builder::class, 'create');
 
-            $queryBuilder = $this->broker->getClass(QueryBuilder::class);
-            $this->methods[$classReflection->getName()] += $this->createMethods($classReflection, $queryBuilder);
+                if ($classReflection->isSubclassOf(Model::class)) {
+                    $returnType = new ObjectType($classReflection->getName());
+                } else {
+                    $returnType = new ObjectType(Model::class);
+                }
+            } elseif ($methodName === 'find') {
+                $phpDocParameterTypes = [
+                    new UnionType([
+                        new StringType(),
+                        new ArrayType(new StringType(), new StringType()),
+                    ]),
+                ];
+                $methodReflection = new ReflectionMethod(Builder::class, 'find');
+
+                $returnType = null;
+            } elseif ($methodName === 'firstOrNew' || $methodName === 'first') {
+                $phpDocParameterTypes = [
+                    new UnionType([
+                        new VoidType(),
+                        new StringType(),
+                    ]),
+                ];
+                $methodReflection = new ReflectionMethod(Builder::class, $methodName);
+
+                if ($classReflection->isSubclassOf(Model::class)) {
+                    $returnType = new ObjectType($classReflection->getName());
+                } else {
+                    $returnType = new ObjectType(Model::class);
+                }
+            } else {
+                return false;
+            }
+            $this->methods[$classReflection->getName()][$methodName] = $this->createMethod(
+                $classReflection,
+                $methodReflection,
+                $phpDocParameterTypes,
+                $returnType
+            );
+            return true;
         }
 
-        if ($classReflection->getName() === Builder::class && !isset($this->methods[Builder::class])) {
-            $queryBuilder = $this->broker->getClass(QueryBuilder::class);
-            $this->methods[Builder::class] = $this->createMethods($classReflection, $queryBuilder);
-        }
-
-        return isset($this->methods[$classReflection->getName()][$methodName]);
+        return false;
     }
 
     /**
@@ -86,45 +185,22 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
         return $this->methods[$classReflection->getName()][$methodName];
     }
 
-    /**
-     * @param \PHPStan\Reflection\ClassReflection $classReflection
-     * @param \PHPStan\Reflection\ClassReflection $queryBuilder
-     *
-     * @return \PHPStan\Reflection\MethodReflection[]
-     */
-    private function createMethods(ClassReflection $classReflection, ClassReflection $queryBuilder): array
-    {
-        $methods = [];
-        foreach ($queryBuilder->getNativeReflection()->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->isStatic()) {
-                continue;
-            }
-
-            $methods[$method->getName()] = $this->methodReflectionFactory->create($classReflection, $method);
-        }
-
-        return $methods;
-    }
-
-    /**
-     * @param ClassReflection $classReflection
-     * @param \PHPStan\Reflection\ClassReflection $builder
-     *
-     * @return \PHPStan\Reflection\MethodReflection[]
-     *
-     * @throws \PHPStan\ShouldNotHappenException
-     */
-    private function createWrappedMethods(ClassReflection $classReflection, ClassReflection $builder): array
-    {
-        $methods = [];
-        foreach ($builder->getNativeReflection()->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $methods[$method->getName()] = $this->methodReflectionFactory->create(
-                $classReflection,
-                $method,
-                ReflectionMethodAlwaysStatic::class
-            );
-        }
-
-        return $methods;
+    private function createMethod(
+        ClassReflection $classReflection,
+        ReflectionMethod $methodReflection,
+        array $phpDocParameterTypes,
+        ?Type $returnType
+    ): PhpMethodReflection {
+        return $this->methodReflectionFactory->create(
+            $classReflection,
+            null,
+            new ReflectionMethodAlwaysStatic($methodReflection),
+            $phpDocParameterTypes,
+            $returnType,
+            null,
+            false,
+            false,
+            false
+        );
     }
 }
