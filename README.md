@@ -10,6 +10,16 @@ To use this extension, require it in [Composer](https://getcomposer.org/):
 ```
 composer require --dev weebly/phpstan-laravel
 ```
+Add config in composer.json for my repository
+```
+"repositories": [
+    {
+        "type": "git",
+        "url": "https://github.com/Ttdnts/phpstan-laravel.git",
+        "reference":"master"
+    }
+],
+```
 
 And include extension.neon in your project's PHPStan config:
 
