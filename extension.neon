@@ -2,6 +2,11 @@ services:
     -
         class: Weebly\PHPStan\Laravel\MethodReflectionFactory
     -
+        class: Weebly\PHPStan\Laravel\Types\ModelFindReturnType
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+    -
         class: Weebly\PHPStan\Laravel\BuilderMethodExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension

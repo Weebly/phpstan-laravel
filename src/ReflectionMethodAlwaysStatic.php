@@ -2,19 +2,11 @@
 
 namespace Weebly\PHPStan\Laravel;
 
-final class ReflectionMethodAlwaysStatic extends \ReflectionMethod
-{
-    /**
-     * @param \ReflectionMethod $reflectionMethod
-     *
-     * @throws \ReflectionException
-     */
-    public function __construct(\ReflectionMethod $reflectionMethod)
-    {
-        parent::__construct($reflectionMethod->getDeclaringClass()->getName(), $reflectionMethod->getName());
-    }
+use PHPStan\Reflection\Php\NativeBuiltinMethodReflection;
 
-    public function isStatic()
+final class ReflectionMethodAlwaysStatic extends NativeBuiltinMethodReflection
+{
+    public function isStatic(): bool
     {
         return true;
     }

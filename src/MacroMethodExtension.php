@@ -50,7 +50,7 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
     /**
      * @inheritdoc
      */
-    public function setBroker(Broker $broker)
+    public function setBroker(Broker $broker): void
     {
         $this->broker = $broker;
     }
