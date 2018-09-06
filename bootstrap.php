@@ -1,6 +1,8 @@
 <?php declare(strict_types = 1);
 
-define('LARAVEL_START', microtime(true));
+if (!defined('LARAVEL_START')) {
+	define('LARAVEL_START', microtime(true));
+}
 
 $app = require_once __DIR__ . '/../../../bootstrap/app.php';
 
