@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Weebly\PHPStan\Laravel;
+namespace Webparking\PHPStan\Lumen;
 
 use PHPStan\Broker\Broker;
 use PHPStan\PhpDoc\PhpDocBlock;

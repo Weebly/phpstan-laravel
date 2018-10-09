@@ -1,23 +1,23 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Weebly\PHPStan\Laravel;
+namespace Tests\Webparking\PHPStan\Lumen;
 
 use PHPStan\Testing\TestCase;
 use PHPStan\Broker\Broker;
-use Weebly\PHPStan\Laravel\MethodReflectionFactory;
+use Webparking\PHPStan\Lumen\MethodReflectionFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\FileTypeMapper;
 use Illuminate\Database\Eloquent\Model;
-use Weebly\PHPStan\Laravel\BuilderMethodExtension;
+use Webparking\PHPStan\Lumen\BuilderMethodExtension;
 use stdClass;
 use Illuminate\Database\Eloquent\Builder;
-use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use Webparking\PHPStan\Lumen\Utils\AnnotationsHelper;
 use PHPStan\Broker\ClassNotFoundException;
 
 /**
- * @package Tests\Weebly\PHPStan\Laravel
+ * @package Tests\Webparking\PHPStan\Lumen
  */
 class BuilderMethodExtensionTest extends TestCase
 {

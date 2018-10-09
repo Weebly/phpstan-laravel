@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Weebly\PHPStan\Laravel\Utils;
+namespace Tests\Webparking\PHPStan\Lumen\Utils;
 
 use PHPUnit\Framework\TestCase;
 use PHPStan\Reflection\ClassReflection;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use Webparking\PHPStan\Lumen\Utils\AnnotationsHelper;
 
 class AnnotationsHelperTest extends TestCase
 {
@@ -16,7 +16,7 @@ class AnnotationsHelperTest extends TestCase
         $reflection = $this->makeClassReflectionMock(<<<EOF
 /**
  * Class AnnotationsHelperTest
- * @package Tests\Weebly\PHPStan\Laravel\Utils
+ * @package Tests\Wepkarking\PHPStan\Lumen\Utils
  * @mixin \PHPUnit\Framework\TestCase
  *
  * @mixin PHPStan\Reflection\ClassReflection

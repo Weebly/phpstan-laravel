@@ -1,6 +1,6 @@
 <?php
 
-namespace Weebly\PHPStan\Laravel\Utils;
+namespace Webparking\PHPStan\Lumen\Utils;
 
 use PHPStan\Reflection\ClassReflection;
 

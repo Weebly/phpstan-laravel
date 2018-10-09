@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Weebly\PHPStan\Laravel;
+namespace Webparking\PHPStan\Lumen;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +10,7 @@ use PHPStan\Reflection\BrokerAwareExtension;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
-use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use Webparking\PHPStan\Lumen\Utils\AnnotationsHelper;
 
 final class BuilderMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
 {
@@ -25,7 +25,7 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
     private $methods = [];
 
     /**
-     * @var \Weebly\PHPStan\Laravel\MethodReflectionFactory
+     * @var \Webparking\PHPStan\Lumen\MethodReflectionFactory
      */
     private $methodReflectionFactory;
 
@@ -37,7 +37,7 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
     /**
      * BuilderMethodExtension constructor.
      *
-     * @param \Weebly\PHPStan\Laravel\MethodReflectionFactory $methodReflectionFactory
+     * @param \Webparking\PHPStan\Lumen\MethodReflectionFactory $methodReflectionFactory
      * @param AnnotationsHelper $annotationsHelper
      */
     public function __construct(MethodReflectionFactory $methodReflectionFactory, AnnotationsHelper $annotationsHelper)
