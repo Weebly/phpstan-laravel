@@ -10,7 +10,11 @@
         }
     ],
     "require": {
-        "laravel/framework": "5.5.* || 5.6.*",
+        "illuminate/auth": "5.5.* || 5.6.*",
+        "illuminate/broadcasting": "5.5.* || 5.6.*",
+        "illuminate/database": "5.5.* || 5.6.*",
+        "illuminate/http": "5.5.* || 5.6.*",
+        "illuminate/view": "5.5.* || 5.6.*",
         "phpstan/phpstan": "^0.9"
     },
     "require-dev": {

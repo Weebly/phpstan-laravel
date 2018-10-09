@@ -42,7 +42,9 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
         switch ($functionReflection->getName()) {
             case 'app':
                 if (empty($functionCall->args) || $scope->getType($functionCall->args[0]->value) instanceof NullType) {
-                    return new ObjectType(\Illuminate\Foundation\Application::class);
+                    return new ObjectType(
+                        $this->getApplicationClass()
+                    );
                 }
 
                 $arg1 = $functionCall->args[0];
@@ -58,7 +60,9 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
                 return new MixedType();
             case 'redirect':
                 if (empty($functionCall->args)) {
-                    return new ObjectType(\Illuminate\Routing\Redirector::class);
+                    return new ObjectType(
+                        $this->getRedirectorClass()
+                    );
                 }
 
                 return new ObjectType(\Illuminate\Http\RedirectResponse::class);
@@ -84,5 +88,27 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
         }
 
         return new MixedType();
+    }
+
+    private function getApplicationClass(): string
+    {
+        if (class_exists('\Illuminate\Foundation\Application')) {
+            return '\Illuminate\Foundation\Application';
+        }
+
+        if (class_exists('\Illuminate\Foundation\Application')) {
+            return '\Illuminate\Foundation\Application';
+        }
+    }
+
+    private function getRedirectorClass(): string
+    {
+        if (class_exists('\Illuminate\Routing\Redirector')) {
+            return '\Illuminate\Routing\Redirector';
+        }
+
+        if (class_exists('\Laravel\Lumen\Http\Redirector')) {
+            return '\Laravel\Lumen\Http\Redirector';
+        }
     }
 }
