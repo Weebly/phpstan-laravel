@@ -1,16 +1,20 @@
 {
-    "name": "weebly/phpstan-laravel",
+    "name": "webparking/phpstan-lumen",
     "license": "BSD-2-Clause",
-    "description": "Laravel plugins for PHPStan",
+    "description": "Lumen plugins for PHPStan",
     "type": "library",
     "authors": [
         {
             "name": "Chris Leppanen",
             "email": "chris.leppanen@weebly.com"
+        },
+        {
+            "name": "Jeroen van Oort",
+            "email": "jeroen.vanoort@webparking.nl"
         }
     ],
     "require": {
-        "laravel/framework": "5.5.* || 5.6.*",
+        "laravel/lumen-framework": "5.5.* || 5.6.*",
         "phpstan/phpstan": "^0.9"
     },
     "require-dev": {
@@ -18,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Weebly\\PHPStan\\Laravel\\": "src/"
+            "Webparking\\PHPStan\\Lumen\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Weebly\\PHPStan\\Laravel\\": "tests/"
+            "Tests\\Webparking\\PHPStan\\Lumen\\": "tests/"
         }
     },
     "extra": {

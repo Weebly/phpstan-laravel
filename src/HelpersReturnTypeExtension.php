@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Weebly\PHPStan\Laravel;
+namespace Webparking\PHPStan\Lumen;
 
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -42,7 +42,7 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
         switch ($functionReflection->getName()) {
             case 'app':
                 if (empty($functionCall->args) || $scope->getType($functionCall->args[0]->value) instanceof NullType) {
-                    return new ObjectType(\Illuminate\Foundation\Application::class);
+                    return new ObjectType(\Laravel\Lumen\Application::class);
                 }
 
                 $arg1 = $functionCall->args[0];
@@ -58,7 +58,7 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
                 return new MixedType();
             case 'redirect':
                 if (empty($functionCall->args)) {
-                    return new ObjectType(\Illuminate\Routing\Redirector::class);
+                    return new ObjectType(\Laravel\Lumen\Http\Redirector::class);
                 }
 
                 return new ObjectType(\Illuminate\Http\RedirectResponse::class);

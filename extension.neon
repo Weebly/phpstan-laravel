@@ -1,24 +1,24 @@
 services:
     -
-        class: Weebly\PHPStan\Laravel\MethodReflectionFactory
+        class: Webparking\PHPStan\Lumen\MethodReflectionFactory
     -
-        class: Weebly\PHPStan\Laravel\BuilderMethodExtension
+        class: Webparking\PHPStan\Lumen\BuilderMethodExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension
     -
-        class: Weebly\PHPStan\Laravel\FacadeMethodExtension
+        class: Webparking\PHPStan\Lumen\FacadeMethodExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension
     -
-        class: Weebly\PHPStan\Laravel\MacroMethodExtension
+        class: Webparking\PHPStan\Lumen\MacroMethodExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension
     -
-        class: Weebly\PHPStan\Laravel\HelpersReturnTypeExtension
+        class: Webparking\PHPStan\Lumen\HelpersReturnTypeExtension
         tags:
             - phpstan.broker.dynamicFunctionReturnTypeExtension
 
-    -   class: Weebly\PHPStan\Laravel\Utils\AnnotationsHelper
+    -   class: Webparking\PHPStan\Lumen\Utils\AnnotationsHelper
 
 parameters:
-    bootstrap: %rootDir%/../../weebly/phpstan-laravel/bootstrap.php
+    bootstrap: %rootDir%/../../webparking/phpstan-lumen/bootstrap.php
