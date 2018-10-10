@@ -96,8 +96,8 @@ final class HelpersReturnTypeExtension implements DynamicFunctionReturnTypeExten
             return '\Illuminate\Foundation\Application';
         }
 
-        if (class_exists('\Illuminate\Foundation\Application')) {
-            return '\Illuminate\Foundation\Application';
+        if (class_exists('\Laravel\Lumen\Application')) {
+            return '\Laravel\Lumen\Application';
         }
     }
 
