@@ -1,5 +1,5 @@
 {
-    "name": "webparking/phpstan-lumen",
+    "name": "webparking2/phpstan-lumen",
     "license": "BSD-2-Clause",
     "description": "Lumen plugins for PHPStan",
     "type": "library",
