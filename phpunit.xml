@@ -17,7 +17,7 @@
     </filter>
 
     <testsuites>
-        <testsuite name="weebly/phpstan-laravel">
+        <testsuite name="webparking/phpstan-lumen">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>

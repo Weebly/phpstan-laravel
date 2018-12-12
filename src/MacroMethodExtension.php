@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Weebly\PHPStan\Laravel;
+namespace Webparking\PHPStan\Lumen;
 
 use Illuminate\Support\Traits\Macroable;
 use PHPStan\Broker\Broker;
@@ -50,7 +50,7 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
     /**
      * @inheritdoc
      */
-    public function setBroker(Broker $broker)
+    public function setBroker(Broker $broker): void
     {
         $this->broker = $broker;
     }
@@ -105,6 +105,7 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
         if ($functionReflection->getFileName() !== false && $functionReflection->getDocComment() !== false) {
             $resolvedPhpDoc = $this->fileTypeMapper->getResolvedPhpDoc(
                 $functionReflection->getFileName(),
+                null,
                 null,
                 $functionReflection->getDocComment()
             );

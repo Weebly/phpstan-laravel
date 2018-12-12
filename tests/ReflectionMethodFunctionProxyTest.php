@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Weebly\PHPStan\Laravel {
+namespace Tests\Webparking\PHPStan\Lumen {
 
 use PHPStan\Testing\TestCase;
-use Weebly\PHPStan\Laravel\ReflectionMethodFunctionProxy;
+use Webparking\PHPStan\Lumen\ReflectionMethodFunctionProxy;
 
 final class ReflectionMethodFunctionProxyTest extends TestCase
 {
@@ -13,7 +13,7 @@ final class ReflectionMethodFunctionProxyTest extends TestCase
     private $reflectionFunction;
 
     /**
-     * @var \Weebly\PHPStan\Laravel\ReflectionMethodFunctionProxy
+     * @var \Webparking\PHPStan\Lumen\ReflectionMethodFunctionProxy
      */
     private $reflectionMethod;
 

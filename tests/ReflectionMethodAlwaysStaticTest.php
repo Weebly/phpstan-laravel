@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace Tests\Weebly\PHPStan\Laravel;
+namespace Tests\Webparking\PHPStan\Lumen;
 
 use PHPStan\Testing\TestCase;
-use Weebly\PHPStan\Laravel\ReflectionMethodAlwaysStatic;
+use Webparking\PHPStan\Lumen\ReflectionMethodAlwaysStatic;
 
 final class ReflectionMethodAlwaysStaticTest extends TestCase
 {

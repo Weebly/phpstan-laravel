@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Weebly\PHPStan\Laravel;
+namespace Webparking\PHPStan\Lumen;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Broadcasting\BroadcastManager;
@@ -10,7 +10,7 @@ use PHPStan\Reflection\BrokerAwareExtension;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\MethodReflection;
-use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use Webparking\PHPStan\Lumen\Utils\AnnotationsHelper;
 use PHPStan\Broker\ClassNotFoundException;
 
 final class FacadeMethodExtension implements MethodsClassReflectionExtension, BrokerAwareExtension
@@ -34,7 +34,7 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
     private $methods = [];
 
     /**
-     * @var \Weebly\PHPStan\Laravel\MethodReflectionFactory
+     * @var \Webparking\PHPStan\Lumen\MethodReflectionFactory
      */
     private $methodReflectionFactory;
 
@@ -46,7 +46,7 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
     /**
      * FacadeMethodExtension constructor.
      *
-     * @param \Weebly\PHPStan\Laravel\MethodReflectionFactory $methodReflectionFactory
+     * @param \Webparking\PHPStan\Lumen\MethodReflectionFactory $methodReflectionFactory
      * @param AnnotationsHelper $annotationsHelper
      */
     public function __construct(MethodReflectionFactory $methodReflectionFactory, AnnotationsHelper $annotationsHelper)
@@ -58,7 +58,7 @@ final class FacadeMethodExtension implements MethodsClassReflectionExtension, Br
     /**
      * @inheritdoc
      */
-    public function setBroker(Broker $broker)
+    public function setBroker(Broker $broker): void
     {
         $this->broker = $broker;
     }

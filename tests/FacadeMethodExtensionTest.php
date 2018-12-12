@@ -1,23 +1,23 @@
 <?php
 
-namespace Tests\Weebly\PHPStan\Laravel;
+namespace Tests\Webparking\PHPStan\Lumen;
 
 use PHPStan\Testing\TestCase;
 use PHPStan\Broker\Broker;
-use Weebly\PHPStan\Laravel\MethodReflectionFactory;
+use Webparking\PHPStan\Lumen\MethodReflectionFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\FileTypeMapper;
-use Weebly\PHPStan\Laravel\FacadeMethodExtension;
-use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
+use Webparking\PHPStan\Lumen\FacadeMethodExtension;
+use Webparking\PHPStan\Lumen\Utils\AnnotationsHelper;
 use PHPStan\Broker\ClassNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @package Tests\Weebly\PHPStan\Laravel
+ * @package Tests\Webparking\PHPStan\Lumen
  */
 class FacadeMethodExtensionTest extends TestCase
 {
