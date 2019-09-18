@@ -45,7 +45,7 @@ final class MethodReflectionFactory
      *
      * @throws \PHPStan\ShouldNotHappenException
      */
-    public function create(ClassReflection $classReflection, \ReflectionMethod $methodReflection, string $methodWrapper = NativeBuiltinMethodReflection::class): MethodReflection
+    public function create(ClassReflection $classReflection, \Reflector $methodReflection, string $methodWrapper = NativeBuiltinMethodReflection::class): MethodReflection
     {
         $phpDocParameterTypes = [];
         $phpDocReturnType = null;

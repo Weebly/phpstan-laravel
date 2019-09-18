@@ -38,10 +38,10 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
     /**
      * MacroMethodExtension constructor.
      *
-     * @param \PHPStan\Reflection\Php\PhpMethodReflectionFactory $methodReflectionFactory
+     * @param MethodReflectionFactory $methodReflectionFactory
      * @param \PHPStan\Type\FileTypeMapper $fileTypeMapper
      */
-    public function __construct(PhpMethodReflectionFactory $methodReflectionFactory, FileTypeMapper $fileTypeMapper)
+    public function __construct(MethodReflectionFactory $methodReflectionFactory, FileTypeMapper $fileTypeMapper)
     {
         $this->methodReflectionFactory = $methodReflectionFactory;
         $this->fileTypeMapper = $fileTypeMapper;
@@ -70,10 +70,9 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
                 $refProperty->setAccessible(true);
 
                 foreach ($refProperty->getValue() as $macro => $callable) {
-                    $this->methods[$classReflection->getName()][$macro] = $this->createMethod(
+                    $this->methods[$classReflection->getName()][$macro] = $this->methodReflectionFactory->create(
                         $classReflection,
-                        new \ReflectionFunction($callable),
-                        $macro
+                        new ReflectionMethodFunctionProxy($classReflection->getName(), $macro, new \ReflectionFunction($callable))
                     );
                 }
             }
@@ -90,36 +89,4 @@ final class MacroMethodExtension implements MethodsClassReflectionExtension, Bro
         return $this->methods[$classReflection->getName()][$methodName];
     }
 
-    /**
-     * @param \PHPStan\Reflection\ClassReflection $classReflection
-     * @param \ReflectionFunction $functionReflection
-     * @param string $methodName
-     *
-     * @return \PHPStan\Reflection\MethodReflection
-     */
-    private function createMethod(ClassReflection $classReflection, \ReflectionFunction $functionReflection, string $methodName): MethodReflection
-    {
-
-        $phpDocParameterTypes = [];
-        $phpDocReturnType = null;
-        if ($functionReflection->getFileName() !== false && $functionReflection->getDocComment() !== false) {
-            $resolvedPhpDoc = $this->fileTypeMapper->getResolvedPhpDoc(
-                $functionReflection->getFileName(),
-                null,
-                $functionReflection->getDocComment()
-            );
-
-            $phpDocParameterTypes = array_map(function (ParamTag $tag): Type {
-                return $tag->getType();
-            }, $resolvedPhpDoc->getParamTags());
-            $phpDocReturnType = $resolvedPhpDoc->getReturnTag() !== null ? $resolvedPhpDoc->getReturnTag()->getType() : null;
-        }
-
-        return $this->methodReflectionFactory->create(
-            $classReflection,
-            new ReflectionMethodFunctionProxy($classReflection->getName(), $methodName, $functionReflection),
-            $phpDocParameterTypes,
-            $phpDocReturnType
-        );
-    }
 }
