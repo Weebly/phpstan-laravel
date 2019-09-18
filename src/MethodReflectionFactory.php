@@ -49,12 +49,17 @@ final class MethodReflectionFactory
     {
         $phpDocParameterTypes = [];
         $phpDocReturnType = null;
+        $phpDocThrowType = null;
+        $phpDocDeprecationDescription = null;
+        $phpDocIsInternal = false;
+        $phpDocIsFinal = false;
+
         if ($methodReflection->getDocComment() !== false) {
             $phpDocBlock = PhpDocBlock::resolvePhpDocBlockForMethod(
                 Broker::getInstance(),
                 $methodReflection->getDocComment(),
                 $methodReflection->getDeclaringClass()->getName(),
-                null, // TODO trait handling
+                null,
                 $methodReflection->getName(),
                 $methodReflection->getFileName()
             );
@@ -62,13 +67,17 @@ final class MethodReflectionFactory
             $resolvedPhpDoc = $this->fileTypeMapper->getResolvedPhpDoc(
                 $phpDocBlock->getFile(),
                 $phpDocBlock->getClass(),
-                null, // TODO trait handling
+                null,
                 $phpDocBlock->getDocComment()
             );
             $phpDocParameterTypes = array_map(function (ParamTag $tag): Type {
                 return $tag->getType();
             }, $resolvedPhpDoc->getParamTags());
             $phpDocReturnType = $resolvedPhpDoc->getReturnTag() !== null ? $resolvedPhpDoc->getReturnTag()->getType() : null;
+            $phpDocThrowType = $resolvedPhpDoc->getThrowsTag() !== null ? $resolvedPhpDoc->getThrowsTag()->getType() : null;
+            $phpDocDeprecationDescription = $resolvedPhpDoc->getDeprecatedTag() !== null ? $resolvedPhpDoc->getDeprecatedTag()->getMessage() : null;
+            $phpDocIsInternal = $resolvedPhpDoc->isInternal();
+            $phpDocIsFinal = $resolvedPhpDoc->isFinal();
         }
 
         if ($methodWrapper) {
@@ -81,11 +90,11 @@ final class MethodReflectionFactory
             $methodReflection,
             $phpDocParameterTypes,
             $phpDocReturnType,
-            null, // TODO Add phpdoc @throw
-            null, // TODO Add phpdoc @deprecated
-            false, // TODO Add phpdoc @deprecated
-            false, // TODO Add phpdoc @internal
-            false // TODO Add final method handling
+            $phpDocThrowType,
+            $phpDocDeprecationDescription,
+            $phpDocDeprecationDescription !== null,
+            $methodReflection->isInternal() || $phpDocIsInternal,
+            $methodReflection->isFinal() || $phpDocIsFinal
         );
     }
 }
