@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PHPStan\Reflection\ClassReflection;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
+use Tests\Weebly\PHPStan\Laravel\Stub\InheritedTestThing;
 use Weebly\PHPStan\Laravel\Utils\AnnotationsHelper;
 
 class AnnotationsHelperTest extends TestCase
@@ -31,6 +32,20 @@ EOF
             [],
             $annotationHelper->getMixins($this->makeClassReflectionMock(''))
         );
+    }
+
+    public function testGetsMixinsOfParentClasses(): void
+    {
+        $reflectionClass = new \ReflectionClass(InheritedTestThing::class);
+        $classReflection = $this
+            ->getMockBuilder(ClassReflection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $classReflection->method('getNativeReflection')->willReturn($reflectionClass);
+
+        $annotationHelper = new AnnotationsHelper();
+        $mixins = $annotationHelper->getMixins($classReflection);
+        $this->assertContains('Tests\Weebly\PHPStan\Laravel\Stub\DynamicMixin', $mixins);
     }
 
     /**

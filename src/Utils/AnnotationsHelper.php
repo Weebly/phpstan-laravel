@@ -14,14 +14,21 @@ class AnnotationsHelper
      */
     public function getMixins(ClassReflection $reflection) : array
     {
-        preg_match_all(
-            '/@mixin\s+([\w\\\\]+)/',
-            (string) $reflection->getNativeReflection()->getDocComment(),
-            $mixins
-        );
+        $mixinResults = [ [] ];
 
-        return array_map(function ($mixin) {
-            return preg_replace('#^\\\\#', '', $mixin);
-        }, $mixins[1]);
+        $currentReflection = $reflection->getNativeReflection();
+        do {
+            preg_match_all(
+                '/@mixin\s+([\w\\\\]+)/',
+                (string) $currentReflection->getDocComment(),
+                $matches
+            );
+
+            $mixinResults[] = array_map(function ($mixin) {
+                return preg_replace('#^\\\\#', '', $mixin);
+            }, $matches[1]);
+        } while ($currentReflection = $currentReflection->getParentClass());
+
+        return array_merge(...$mixinResults);
     }
 }

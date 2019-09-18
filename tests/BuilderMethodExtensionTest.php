@@ -2,6 +2,8 @@
 
 namespace Tests\Weebly\PHPStan\Laravel;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use PHPStan\Testing\TestCase;
 use PHPStan\Broker\Broker;
 use Weebly\PHPStan\Laravel\MethodReflectionFactory;
@@ -65,6 +67,19 @@ class BuilderMethodExtensionTest extends TestCase
         } catch (ClassNotFoundException $e) {
             $this->markTestIncomplete($e->getMessage());
         }
+    }
+
+    public function testFindsMethodsAnnotatedAsMixinsInParentsOfCurrentClass(): void
+    {
+        $extension = new BuilderMethodExtension(
+            $this->makeMethodReflectionFactoryMock(),
+            new AnnotationsHelper()
+        );
+        $extension->setBroker($this->broker);
+
+        // @mixin annotation is on Relation class which is a parent of HasMany.
+        $this->assertTrue($extension->hasMethod($this->broker->getClass(Relation::class), 'where'));
+        $this->assertTrue($extension->hasMethod($this->broker->getClass(HasMany::class), 'where'));
     }
 
     /**
