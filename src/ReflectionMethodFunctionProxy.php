@@ -26,7 +26,6 @@ final class ReflectionMethodFunctionProxy extends \ReflectionMethod
      */
     public function __construct(string $className, string $methodName, \ReflectionFunction $reflectionFunction)
     {
-        parent::__construct($className, $methodName);
         $this->className = $className;
         $this->methodName = $methodName;
         $this->reflectionFunction = $reflectionFunction;
