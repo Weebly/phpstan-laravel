@@ -26,7 +26,7 @@ final class ReflectionMethodFunctionProxyTest extends TestCase
         );
 
         $this->reflectionMethod = new ReflectionMethodFunctionProxy(
-            'Foo\TestThing',
+            'Tests\Weebly\PHPStan\Laravel\Stub\TestThing',
             'testMethodFoo',
             $this->reflectionFunction
         );
@@ -35,7 +35,7 @@ final class ReflectionMethodFunctionProxyTest extends TestCase
     public function testInterestingThings()
     {
         $this->assertSame(
-            'Foo\TestThing',
+            'Tests\Weebly\PHPStan\Laravel\Stub\TestThing',
             $this->reflectionMethod->getDeclaringClass()->getName()
         );
 
@@ -43,7 +43,7 @@ final class ReflectionMethodFunctionProxyTest extends TestCase
 
         $this->assertNull($this->reflectionMethod->setAccessible(true));
 
-        $this->assertSame('Foo', $this->reflectionMethod->getNamespaceName());
+        $this->assertSame('Tests\Weebly\PHPStan\Laravel\Stub', $this->reflectionMethod->getNamespaceName());
 
         $this->assertSame('testMethodFoo', $this->reflectionMethod->getName());
         $this->assertSame('testMethodFoo', $this->reflectionMethod->getShortName());
@@ -62,7 +62,7 @@ final class ReflectionMethodFunctionProxyTest extends TestCase
     /**
      * @dataProvider returnsMethodValue
      */
-    public function testMethodRetuns(string $method)
+    public function testMethodReturns(string $method)
     {
         $value = $this->reflectionFunction->$method();
 

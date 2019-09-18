@@ -7,6 +7,7 @@ use PHPStan\PhpDoc\PhpDocBlock;
 use PHPStan\PhpDoc\Tag\ParamTag;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\NativeBuiltinMethodReflection;
 use PHPStan\Reflection\Php\PhpMethodReflectionFactory;
 use PHPStan\Type\FileTypeMapper;
 use PHPStan\Type\Type;
@@ -44,7 +45,7 @@ final class MethodReflectionFactory
      *
      * @throws \PHPStan\ShouldNotHappenException
      */
-    public function create(ClassReflection $classReflection, \ReflectionMethod $methodReflection, string $methodWrapper = null): MethodReflection
+    public function create(ClassReflection $classReflection, \ReflectionMethod $methodReflection, string $methodWrapper = NativeBuiltinMethodReflection::class): MethodReflection
     {
         $phpDocParameterTypes = [];
         $phpDocReturnType = null;
@@ -53,6 +54,7 @@ final class MethodReflectionFactory
                 Broker::getInstance(),
                 $methodReflection->getDocComment(),
                 $methodReflection->getDeclaringClass()->getName(),
+                null, // TODO trait handling
                 $methodReflection->getName(),
                 $methodReflection->getFileName()
             );
@@ -60,6 +62,7 @@ final class MethodReflectionFactory
             $resolvedPhpDoc = $this->fileTypeMapper->getResolvedPhpDoc(
                 $phpDocBlock->getFile(),
                 $phpDocBlock->getClass(),
+                null, // TODO trait handling
                 $phpDocBlock->getDocComment()
             );
             $phpDocParameterTypes = array_map(function (ParamTag $tag): Type {
@@ -74,9 +77,15 @@ final class MethodReflectionFactory
 
         return $this->methodReflectionFactory->create(
             $classReflection,
+            null,
             $methodReflection,
             $phpDocParameterTypes,
-            $phpDocReturnType
+            $phpDocReturnType,
+            null, // TODO Add phpdoc @throw
+            null, // TODO Add phpdoc @deprecated
+            false, // TODO Add phpdoc @deprecated
+            false, // TODO Add phpdoc @internal
+            false // TODO Add final method handling
         );
     }
 }
