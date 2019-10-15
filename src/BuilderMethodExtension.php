@@ -70,6 +70,10 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
             $this->methods[$classReflection->getName()] += $this->createMethods($classReflection, $queryBuilder);
         }
 
+        if ($classReflection->isSubclassOf(Model::class)) {
+            $this->methods[$classReflection->getName()] += $this->createModelMethod($classReflection, $methodName);
+        }
+
         if ($classReflection->getName() === Builder::class && !isset($this->methods[Builder::class])) {
             $queryBuilder = $this->broker->getClass(QueryBuilder::class);
             $this->methods[Builder::class] = $this->createMethods($classReflection, $queryBuilder);
@@ -126,5 +130,30 @@ final class BuilderMethodExtension implements MethodsClassReflectionExtension, B
         }
 
         return $methods;
+    }
+
+    /**
+     * @param ClassReflection $classReflection
+     *
+     * @return \PHPStan\Reflection\MethodReflection
+     */
+    private function createModelMethod(ClassReflection $classReflection, string $methodName): array
+    {
+        if (strpos($methodName, 'where') !== 0) {
+            return [];
+        }
+
+        $propertyName = strtolower(substr($methodName, 5, 1)) . substr($methodName, 6);
+        if (!$classReflection->hasProperty($propertyName)) {
+            return [];
+        }
+
+        return [
+            $methodName => new CustomMethod(
+                $classReflection,
+                $methodName,
+                $classReflection->getName()
+            )
+        ];
     }
 }
